@@ -13,6 +13,8 @@ import java.util.Scanner;
  */
 public class BestGymEver {
 
+    public boolean test = false;
+
     protected List<Customer> customers = new ArrayList<>();
     protected List<Visit> visits = new ArrayList<>();
 
@@ -33,21 +35,6 @@ public class BestGymEver {
         return customers;
     }
 
-    public String findCustomerWithName(String name){
-        boolean member = false;
-        String customerStatus = null;
-        for(Customer c: customers){
-            if(c.getName().equals(name)){
-                member = true;
-                customerStatus = c.getMemberStatus();
-            }
-        }
-
-        if(member){
-            return customerStatus;
-        } else
-            return "obehörig";
-    }
 
     public String findCustomer(String searchWord){
         customersFromFile("src/customers.txt");
@@ -69,20 +56,39 @@ public class BestGymEver {
 
     public void logVisit(Customer c){
         visits.add(new Visit(c));
+        // nån gång ska det ju ut i en fil också
+    }
+
+    public String userInput(String userPrompt, String testParameter){
+        Scanner sc;
+        if(test){
+            sc = new Scanner(testParameter);
+        } else {
+            sc = new Scanner(System.in);
+        }
+
+        while(true){
+            try {
+                System.out.println(userPrompt);
+                return sc.nextLine();
+            } catch (Exception e){
+                System.out.println("fel inträffade");
+                e.printStackTrace();
+                sc.next();
+            }
+        }
+    }
+
+    public void program(){
+        customersFromFile("src/customers.txt");
+        String searchCustomer = userInput("Skriv namn eller personnummer: ", null);
+        findCustomer(searchCustomer);
+
     }
 
     public static void main(String[] args) {
         BestGymEver bge = new BestGymEver();
-        bge.customersFromFile("src/customers.txt");
-
-        System.out.println(bge.customers.get(2));
-
-        System.out.println(bge.findCustomerWithName("okänd"));
-        System.out.println(bge.findCustomerWithName("Alhambra Aromes"));
-
-        System.out.println(bge.findCustomer("Alhambra Aromes"));
-        System.out.println(bge.findCustomer("7608021234"));
-
+        bge.program();
 
 
 

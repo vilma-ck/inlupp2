@@ -47,7 +47,7 @@ public class BestGymEverTest {
    }
 
    @Test
-    public final void findCustomerTest(){
+    public final void finlupp2indCustomerTest(){
         // ge namn på kund, returnera kunds status:
        // nuvarande medlem, före detta medlem, obehörig
        // metoden måste ha åtkomst till lista med medlemmar, listan måste startas
@@ -84,10 +84,18 @@ public class BestGymEverTest {
 
    }
 
+   @Test
    public final void userInputTest(){
         // jaha vad ska vi göra här då?
        // kolla att en användare anger giltigt namn eller personnummer
-       //
+       // jobba mer med dessa texter
+
+       bge.test = true;
+       String testString = "t";
+
+       assertEquals(bge.userInput("prompt", testString), "t");
+       assertFalse(bge.userInput("prompt", testString) == "f");
+
 
    }
 
