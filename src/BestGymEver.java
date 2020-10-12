@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,13 +24,11 @@ public class BestGymEver {
         try {
             Scanner file = new Scanner(new File(filePath));
             while (file.hasNext()) {
-                String number = file.next();
-                String name = file.nextLine();
+                String[] personInfo = file.nextLine().split(",");
                 LocalDate date = LocalDate.parse(file.nextLine());
-                customers.add(new Customer(number.substring(0, number.length()-1).trim(), name.trim(), date));
-
+                customers.add(new Customer(personInfo[0].trim(), personInfo[1].trim(), date));
             }
-        } catch (Exception FileNotFoundException) {
+        } catch (FileNotFoundException e) {
             System.out.println("Filen hittades inte.");
         }
         return customers;
@@ -82,7 +81,7 @@ public class BestGymEver {
     public void program(){
         customersFromFile("src/customers.txt");
         String searchCustomer = userInput("Skriv namn eller personnummer: ", null);
-        findCustomer(searchCustomer);
+        System.out.println(findCustomer(searchCustomer));
 
     }
 

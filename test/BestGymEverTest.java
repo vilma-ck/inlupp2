@@ -47,7 +47,7 @@ public class BestGymEverTest {
    }
 
    @Test
-    public final void finlupp2indCustomerTest(){
+    public final void findCustomerTest(){
         // ge namn på kund, returnera kunds status:
        // nuvarande medlem, före detta medlem, obehörig
        // metoden måste ha åtkomst till lista med medlemmar, listan måste startas
