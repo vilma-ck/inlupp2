@@ -9,11 +9,11 @@ import java.time.LocalDate;
 public class Visit {
 
     private IforPTInfo customer;
-    private LocalDate visit;
+    private LocalDate date;
 
     public Visit(IforPTInfo customer){
         this.customer = customer;
-        this.visit = LocalDate.now();
+        this.date = LocalDate.now();
     }
 
     public IforPTInfo getCustomer(){
@@ -23,7 +23,7 @@ public class Visit {
     @Override
     public String toString() {
         return "Visit{" +
-                "customer=" + customer.getName() + ", person number=" + customer.getPersonNumber()+ ", visit=" + visit +
+                "customer=" + customer.getName() + ", person number=" + customer.getPersonNumber()+ ", date of visit=" + date +
                 '}';
     }
 }

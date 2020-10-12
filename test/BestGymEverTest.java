@@ -16,7 +16,6 @@ public class BestGymEverTest {
 
     BestGymEver bge = new BestGymEver();
 
-
     @Test
     public final void newCustomerTest(){
         String personNumber = "7603021234";
@@ -48,29 +47,37 @@ public class BestGymEverTest {
 
    @Test
     public final void findCustomerTest(){
-        // ge namn på kund, returnera kunds status:
-       // nuvarande medlem, före detta medlem, obehörig
-       // metoden måste ha åtkomst till lista med medlemmar, listan måste startas
-       //  customersFromFile("src/customers.txt");
+        // ge namn på kund eller personnummer
+       // returnera kundobjekt
 
-       // find customers with names
-       assertTrue(bge.findCustomer("okänd") == "obehörig");
-       assertEquals(bge.findCustomer("okänd"), "obehörig");
-       assertFalse(bge.findCustomer("Alhambra Aromes") == "nuvarande medlem");
-       assertEquals(bge.findCustomer("Alhambra Aromes"), "före detta medlem");
-       assertEquals(bge.findCustomer("Diamanda Djedi"), "nuvarande medlem");
+       bge.customersFromFile("src/customers.txt");
 
-       // find customers with number
-       assertTrue(bge.findCustomer("0000000000") == "obehörig");
-       assertEquals(bge.findCustomer("okänd"), "obehörig");
-       assertFalse(bge.findCustomer("Alhambra Aromes") == "nuvarande medlem");
+       assertEquals(bge.findCustomer("Alhambra Aromes"), bge.customers.get(0));
+       assertNotEquals(bge.findCustomer("Alhambra Aromes"), bge.customers.get(1));
+       assertEquals(bge.findCustomer("Diamanda Djedi"), bge.customers.get(3));
+       assertEquals(bge.findCustomer("0000000000"), null);
+       assertEquals(bge.findCustomer("7603021234"), bge.customers.get(0));
+
+   }
+
+   @Test
+   public final void checkCustomerStatusTest(){
+       // ge namn på kund, returnera kunds status:
+       // nuvarande medlem, före detta medlem
+       // "Alhambra Aromes", bge.customers.get(0)
+       // "Diamanda Djedi", bge.customers.get(3)
+
+       bge.customersFromFile("src/customers.txt");
+
+       assertTrue(bge.checkCustomerStatus(bge.customers.get(0)) == "före detta medlem");
+       assertTrue(bge.checkCustomerStatus(bge.customers.get(3)) == "nuvarande medlem");
+       assertFalse(bge.checkCustomerStatus(bge.customers.get(0)) == "nuvarande medlem");
 
    }
 
    @Test
     public final void logVisitsTest(){
         // ge kund, lägg till kundvisit i lista
-       // listan e protected för att nås här
 
        Customer c = new Customer("7603021234", "Alhambra Aromes",  LocalDate.parse("2019-07-01"));
        Customer c2 = new Customer("8104021234", "Bear Belle",  LocalDate.parse("2019-12-08"));
@@ -86,15 +93,21 @@ public class BestGymEverTest {
 
    @Test
    public final void userInputTest(){
-        // jaha vad ska vi göra här då?
        // kolla att en användare anger giltigt namn eller personnummer
-       // jobba mer med dessa texter
+       // jobba mer med denna
 
        bge.test = true;
-       String testString = "t";
+       String testString = "testar";
 
-       assertEquals(bge.userInput("prompt", testString), "t");
-       assertFalse(bge.userInput("prompt", testString) == "f");
+       assertEquals(bge.userInput("prompt", testString), "testar");
+       assertNotEquals(bge.userInput("prompt", testString), "destar");
+   }
+
+   @Test
+    public final void printVisitsToFile(){
+        // listan med visits ska skrivas till fil
+       // appenda till fil, inte skriva över
+       // det testas genom att räkna antalet rader i filen
 
 
    }

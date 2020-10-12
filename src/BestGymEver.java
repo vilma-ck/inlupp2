@@ -1,6 +1,7 @@
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,47 +16,48 @@ import java.util.Scanner;
 public class BestGymEver {
 
     public boolean test = false;
-
     protected List<Customer> customers = new ArrayList<>();
     protected List<Visit> visits = new ArrayList<>();
 
     public List<Customer> customersFromFile(String filePath) {
-
-        try {
-            Scanner file = new Scanner(new File(filePath));
-            while (file.hasNext()) {
-                String[] personInfo = file.nextLine().split(",");
-                LocalDate date = LocalDate.parse(file.nextLine());
+        Path path = Paths.get(filePath);
+        String tempLine;
+        try(BufferedReader bufferInput = Files.newBufferedReader(path)) {
+            while ((tempLine = bufferInput.readLine()) != null) {
+                String[] personInfo = tempLine.split(",");
+                LocalDate date = LocalDate.parse(bufferInput.readLine());
                 customers.add(new Customer(personInfo[0].trim(), personInfo[1].trim(), date));
             }
-        } catch (FileNotFoundException e) {
-            System.out.println("Filen hittades inte.");
+        }  catch (FileNotFoundException e){
+            System.out.println("Filen hittades ej.");
+            e.printStackTrace();
+        } catch (IOException e){
+            System.out.println("Filen kan ej öppnas.");
+            e.printStackTrace();
+        } catch (Exception e){
+            System.out.println("Något har gått fel.");
+            e.printStackTrace();
         }
         return customers;
     }
 
 
-    public String findCustomer(String searchWord){
-        customersFromFile("src/customers.txt");
-
-        boolean member = false;
-        String customerStatus = null;
+    public Customer findCustomer(String searchTerm){
+        Customer foundCustomer = null;
         for(Customer c: customers){
-            if(c.getName().equals(searchWord) || c.getPersonNumber().equals(searchWord)){
-                member = true;
-                customerStatus = c.getMemberStatus();
+            if(c.getName().equalsIgnoreCase(searchTerm) || c.getPersonNumber().equals(searchTerm)){
+                foundCustomer = c;
             }
         }
+        return foundCustomer;
+    }
 
-        if(member){
-            return customerStatus;
-        } else
-            return "obehörig";
+    public String checkCustomerStatus(Customer c){
+        return c.getMemberStatus();
     }
 
     public void logVisit(Customer c){
         visits.add(new Visit(c));
-        // nån gång ska det ju ut i en fil också
     }
 
     public String userInput(String userPrompt, String testParameter){
@@ -71,26 +73,64 @@ public class BestGymEver {
                 System.out.println(userPrompt);
                 return sc.nextLine();
             } catch (Exception e){
-                System.out.println("fel inträffade");
+                System.out.println("Något har gått fel.");
                 e.printStackTrace();
                 sc.next();
             }
         }
     }
 
+    public void printVisitorsToFile(String filePath){
+        Path path = Paths.get(filePath);
+        try(PrintWriter printer = new PrintWriter(new FileWriter(filePath, true));){
+            for(Visit v: visits){
+                printer.print(v + "\n");
+            }
+        } catch (FileNotFoundException e){
+            System.out.println("Filen hittades ej.");
+            e.printStackTrace();
+        } catch (IOException e){
+            System.out.println("Filen kan ej öppnas.");
+            e.printStackTrace();
+        } catch (Exception e){
+            System.out.println("Något har gått fel.");
+            e.printStackTrace();
+        }
+    }
+
+
+    public void userLoop(){
+
+        while(true){
+            String searchTerm = userInput("Skriv namn eller personnummer: ", null);
+
+            if(searchTerm.equalsIgnoreCase("avsluta")){
+                break;
+            }
+
+            Customer foundCustomer = findCustomer(searchTerm);
+
+            if(foundCustomer!=null && checkCustomerStatus(foundCustomer).equals("nuvarande medlem")){
+                System.out.println("Kunden är nuvarande medlem, besöket loggas.");
+                logVisit(foundCustomer);
+            } else if(foundCustomer!=null && checkCustomerStatus(foundCustomer).equals("före detta medlem")){
+                System.out.println("Kunden är ej aktiv medlem.");
+            } else if (foundCustomer == null) {
+                System.out.println("Detta är inte en kund på Best Gymn Ever.");
+            }
+        }
+    }
+
     public void program(){
         customersFromFile("src/customers.txt");
-        String searchCustomer = userInput("Skriv namn eller personnummer: ", null);
-        System.out.println(findCustomer(searchCustomer));
-
+        userLoop();
+        printVisitorsToFile("src/visits.txt");
+        System.out.println("Dagens besök sparas till fil.");
     }
 
     public static void main(String[] args) {
         BestGymEver bge = new BestGymEver();
         bge.program();
-
-
-
 
     }
 
