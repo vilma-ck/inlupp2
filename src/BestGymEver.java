@@ -32,10 +32,10 @@ public class BestGymEver {
             System.out.println("Filen hittades ej.");
             e.printStackTrace();
         } catch (IOException e){
-            System.out.println("Filen kan ej öppnas.");
+            System.out.println("Filen kunde ej öppnas.");
             e.printStackTrace();
         } catch (Exception e){
-            System.out.println("Något har gått fel.");
+            System.out.println("Något gick fel.");
             e.printStackTrace();
         }
         return customers;
@@ -52,9 +52,6 @@ public class BestGymEver {
         return foundCustomer;
     }
 
-    public String checkCustomerStatus(Customer c){
-        return c.getMemberStatus();
-    }
 
     public void logVisit(Customer c){
         visits.add(new Visit(c));
@@ -73,7 +70,7 @@ public class BestGymEver {
                 System.out.println(userPrompt);
                 return sc.nextLine();
             } catch (Exception e){
-                System.out.println("Något har gått fel.");
+                System.out.println("Något gick fel.");
                 e.printStackTrace();
                 sc.next();
             }
@@ -90,11 +87,10 @@ public class BestGymEver {
             System.out.println("Filen hittades ej.");
             e.printStackTrace();
         } catch (IOException e){
-            System.out.println("Filen kan ej öppnas.");
+            System.out.println("Filen kunde ej öppnas.");
             e.printStackTrace();
         } catch (Exception e){
-            System.out.println("Något har gått fel.");
-            e.printStackTrace();
+            System.out.println("Något gick fel.");
         }
     }
 
@@ -103,17 +99,16 @@ public class BestGymEver {
 
         while(true){
             String searchTerm = userInput("Skriv namn eller personnummer: ", null);
-
             if(searchTerm.equalsIgnoreCase("avsluta")){
                 break;
             }
 
             Customer foundCustomer = findCustomer(searchTerm);
 
-            if(foundCustomer!=null && checkCustomerStatus(foundCustomer).equals("nuvarande medlem")){
+            if(foundCustomer!=null && foundCustomer.activeMember()){
                 System.out.println("Kunden är nuvarande medlem, besöket loggas.");
                 logVisit(foundCustomer);
-            } else if(foundCustomer!=null && checkCustomerStatus(foundCustomer).equals("före detta medlem")){
+            } else if(foundCustomer!=null && !foundCustomer.activeMember()){
                 System.out.println("Kunden är ej aktiv medlem.");
             } else if (foundCustomer == null) {
                 System.out.println("Detta är inte en kund på Best Gymn Ever.");

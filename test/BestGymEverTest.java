@@ -1,7 +1,11 @@
 import org.junit.jupiter.api.Test;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,11 +42,15 @@ public class BestGymEverTest {
         // skicka länk till fil
        // skapa Customer-objekt från fil
        // returnera lista med Customer-objekt
-       List<Customer> customers = bge.customersFromFile("test/customerstest.txt");
+       //List<Customer> customers = bge.customersFromFile("test/customerstest.txt");
 
-       assertEquals(customers.get(0).getName(), "Alhambra Aromes");
-       assertFalse(customers.get(0).getName() == "Diamanda Djedi");
-       assertEquals(customers.get(1).getName(),"Diamanda Djedi");
+       bge.customersFromFile("test/customerstest.txt");
+
+       assertEquals(bge.customers.get(0).getName(), "Alhambra Aromes");
+       assertFalse(bge.customers.get(0).getName() == "Diamanda Djedi");
+       assertEquals(bge.customers.get(1).getName(),"Diamanda Djedi");
+
+       //
    }
 
    @Test
@@ -60,24 +68,9 @@ public class BestGymEverTest {
 
    }
 
-   @Test
-   public final void checkCustomerStatusTest(){
-       // ge namn på kund, returnera kunds status:
-       // nuvarande medlem, före detta medlem
-       // "Alhambra Aromes", bge.customers.get(0)
-       // "Diamanda Djedi", bge.customers.get(3)
-
-       bge.customersFromFile("src/customers.txt");
-
-       assertTrue(bge.checkCustomerStatus(bge.customers.get(0)) == "före detta medlem");
-       assertTrue(bge.checkCustomerStatus(bge.customers.get(3)) == "nuvarande medlem");
-       assertFalse(bge.checkCustomerStatus(bge.customers.get(0)) == "nuvarande medlem");
-
-   }
 
    @Test
     public final void logVisitsTest(){
-        // ge kund, lägg till kundvisit i lista
 
        Customer c = new Customer("7603021234", "Alhambra Aromes",  LocalDate.parse("2019-07-01"));
        Customer c2 = new Customer("8104021234", "Bear Belle",  LocalDate.parse("2019-12-08"));
@@ -100,14 +93,47 @@ public class BestGymEverTest {
        String testString = "testar";
 
        assertEquals(bge.userInput("prompt", testString), "testar");
-       assertNotEquals(bge.userInput("prompt", testString), "destar");
+       assertNotEquals(bge.userInput("prompt", testString), "testar igen");
+   }
+
+   public final int countLines(String filePath){
+        int lines = 0;
+        try(BufferedReader r = new BufferedReader(new FileReader(filePath));){
+            while(r.readLine() != null) {
+                lines++;
+            }
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        return lines;
+   }
+
+   public final void removeFile(String filePath){
+        try{
+            Files.deleteIfExists(Paths.get(filePath));
+        } catch (IOException e){
+            e.printStackTrace();
+        }
    }
 
    @Test
-    public final void printVisitsToFile(){
-        // listan med visits ska skrivas till fil
-       // appenda till fil, inte skriva över
-       // det testas genom att räkna antalet rader i filen
+    public final void printVisitsToFileTest(){
+       Customer c = new Customer("7603021234", "Alhambra Aromes",  LocalDate.parse("2019-07-01"));
+       Customer c2 = new Customer("8104021234", "Bear Belle",  LocalDate.parse("2019-12-08"));
+       bge.visits.add(new Visit(c));
+       bge.visits.add(new Visit(c));
+
+       String filePath = "test/visitsTest.txt";
+
+       // ta bort förra filen iom append
+       removeFile(filePath);
+
+       // skapa filen
+       bge.printVisitorsToFile(filePath);
+
+       // räkna
+       assertEquals(countLines(filePath), 2);
+       assertNotEquals(countLines(filePath), 4);
 
 
    }

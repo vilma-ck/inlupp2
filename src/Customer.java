@@ -38,13 +38,6 @@ public class Customer implements IforPTInfo{
             return false;
     }
 
-    public String getMemberStatus(){
-        if(activeMember()){
-            return "nuvarande medlem";
-        } else {
-            return "före detta medlem";
-        }
-    }
 
     @Override
     public String toString() {
