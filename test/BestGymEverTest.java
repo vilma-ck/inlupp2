@@ -47,10 +47,9 @@ public class BestGymEverTest {
        bge.customersFromFile("test/customerstest.txt");
 
        assertEquals(bge.customers.get(0).getName(), "Alhambra Aromes");
-       assertFalse(bge.customers.get(0).getName() == "Diamanda Djedi");
+       assertNotEquals(bge.customers.get(0).getName(), "Diamanda Djedi");
        assertEquals(bge.customers.get(1).getName(),"Diamanda Djedi");
 
-       //
    }
 
    @Test
@@ -86,8 +85,6 @@ public class BestGymEverTest {
 
    @Test
    public final void userInputTest(){
-       // kolla att en användare anger giltigt namn eller personnummer
-       // jobba mer med denna
 
        bge.test = true;
        String testString = "testar";
